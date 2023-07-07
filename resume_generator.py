@@ -136,9 +136,12 @@ class UserInterface:
 
         # Add personal information
         doc.add_heading("Personal Information", level=1)
-        doc.add_paragraph(f"Name: {self.personal_info['name']}")
-        doc.add_paragraph(f"Email: {self.personal_info['email']}")
-        doc.add_paragraph(f"Phone: {self.personal_info['phone']}")
+        p = doc.add_paragraph()
+        p.add_run(f"Name: {self.personal_info.get('name', '')}").bold = True
+        p.add_run(" | ")
+        p.add_run(f"Email: {self.personal_info.get('email', '')}").bold = True
+        p.add_run(" | ")
+        p.add_run(f"Phone: {self.personal_info.get('phone', '')}").bold = True    
 
         # Add education details
         doc.add_heading("Education", level=1)
@@ -181,21 +184,6 @@ class UserInterface:
         # Save the document
         doc.save("resume.docx")
         print("Resume generated successfully!")
-
-class ApplicationLogic:
-    def __init__(self):
-        self.ui = UserInterface()
-
-    def process_user_input(self):
-        self.ui.capture_personal_info()
-        self.ui.capture_education()
-        self.ui.capture_work_experience()
-        self.ui.capture_research_experience()
-        self.ui.capture_project_experience()
-        self.ui.capture_personal_statement()
-
-    def generate_resume(self):
-        self.ui.display_resume()
 
 def main():
     parser = argparse.ArgumentParser(description="Python Resume Generator")
