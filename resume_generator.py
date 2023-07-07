@@ -1,22 +1,20 @@
-import argparse
 import json
 from docx import Document
 from docx.shared import Pt, Inches
 from typing import List, Optional
 from models import Resume
 from user_interface import UserInterface
+import typer
 
-def main():
-    parser = argparse.ArgumentParser(description="Python Resume Generator")
-    parser.add_argument("--input", help="Path to input file")
+app = typer.Typer()
 
-    args = parser.parse_args()
-
+@app.command()
+def generate_resume(input_file: Optional[str] = typer.Option(None, "--input", "-i", help="Path to input file")):
     ui = UserInterface()
 
-    if args.input:
+    if input_file:
         # Read input from file
-        with open(args.input, "r") as file:
+        with open(input_file, "r") as file:
             input_data = file.read()
 
         # Parse input JSON data
@@ -35,5 +33,8 @@ def main():
     # Display the resume
     ui.display_resume()
 
+def main():
+    app()
+
 if __name__ == "__main__":
-    main()
+    app()
