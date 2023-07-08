@@ -2,16 +2,23 @@ import json
 from docx import Document
 from docx.shared import Pt, Inches
 from typing import List, Optional
-from models import Resume
-from user_interface import UserInterface
+from cv_builder.models import Resume
+from cv_builder.user_interface import UserInterface
 import typer
+from pathlib import Path
 
 app = typer.Typer()
 
 @app.command()
-def generate_resume(input_file: Optional[str] = typer.Option(None, "--input", "-i", help="Path to input file")):
-    ui = UserInterface()
+def generate_resume(
+    case_path: str = typer.Argument("cases/example", help="path"),
+    json_file: Optional[str] = typer.Option(None, "--input", "-i", help="Path to input file")):
+    
 
+
+    input_path = Path(case_path).absolute()
+    input_file = input_path / "input.json"
+    ui = UserInterface(case_path=case_path)
     if input_file:
         # Read input from file
         with open(input_file, "r") as file:

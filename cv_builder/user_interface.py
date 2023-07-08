@@ -1,9 +1,10 @@
 from docx import Document
 from docx.shared import Pt, Inches
-from models import Resume, PersonalInfo, Education, WorkExperience, ResearchExperience, ProjectExperience
+from cv_builder.models import Resume, PersonalInfo, Education, WorkExperience, ResearchExperience, ProjectExperience
+import os
 
 class UserInterface:
-    def __init__(self):
+    def __init__(self, case_path: str = "cases/example"):
         self.resume = Resume(
             personal_info=None,
             education=None,
@@ -12,6 +13,7 @@ class UserInterface:
             project_experience=None,
             personal_statement=None
         )
+        self.case_path = case_path
 
     def capture_personal_info(self):
         print("Please provide your personal information:")
@@ -183,5 +185,5 @@ class UserInterface:
         doc.add_paragraph(self.resume.personal_statement or '')
 
         # Save the document
-        doc.save("resume.docx")
+        doc.save(os.path.join(self.case_path, "resume.docx"))
         print("Resume generated successfully!")
