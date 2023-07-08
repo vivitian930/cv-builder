@@ -1,0 +1,44 @@
+{
+  "personal_info": {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "1234567890"
+  },
+  "education": [
+    {
+      "degree": "Undergraduate",
+      "university": "Unknown",
+      "graduation_date": "2022"
+    }
+  ],
+  "work_experience": [
+    {
+      "company": "Unknown",
+      "position": "Unknown",
+      "start_date": "Unknown",
+      "end_date": "Unknown",
+      "summary": "Unknown",
+      "bullet_points": []
+    }
+  ],
+  "research_experience": [
+    {
+      "organization": "Unknown",
+      "position": "Unknown",
+      "start_date": "Unknown",
+      "end_date": "Unknown",
+      "summary": "Unknown",
+      "bullet_points": []
+    }
+  ],
+  "project_experience": [
+    {
+      "name": "Unknown",
+      "start_date": "Unknown",
+      "end_date": "Unknown",
+      "summary": "Unknown",
+      "bullet_points": []
+    }
+  ],
+  "personal_statement": ""
+}
