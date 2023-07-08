@@ -1,57 +1,27 @@
-import argparse
-import json
 from docx import Document
 from docx.shared import Pt, Inches
-from typing import List, Optional
-from pydantic import BaseModel
-
-class PersonalInfo(BaseModel):
-    name: Optional[str]
-    email: Optional[str]
-    phone: Optional[str]
-
-class Education(BaseModel):
-    degree: Optional[str]
-    university: Optional[str]
-    graduation_date: Optional[str]
-
-class WorkExperience(BaseModel):
-    company: Optional[str]
-    position: Optional[str]
-    start_date: Optional[str]
-    end_date: Optional[str]
-    summary: Optional[str]
-    bullet_points: Optional[List[str]]
-
-class ResearchExperience(BaseModel):
-    organization: Optional[str]
-    position: Optional[str]
-    start_date: Optional[str]
-    end_date: Optional[str]
-    summary: Optional[str]
-    bullet_points: Optional[List[str]]
-
-class ProjectExperience(BaseModel):
-    name: Optional[str]
-    start_date: Optional[str]
-    end_date: Optional[str]
-    summary: Optional[str]
-    bullet_points: Optional[List[str]]
+from cv_builder.models import Resume, PersonalInfo, Education, WorkExperience, ResearchExperience, ProjectExperience
+import os
 
 class UserInterface:
-    def __init__(self):
-        self.personal_info = PersonalInfo(name=None, email=None, phone=None)
-        self.education = []
-        self.work_experience = []
-        self.research_experience = []
-        self.project_experience = []
-        self.personal_statement = ""
+    def __init__(self, case_path: str = "cases/example"):
+        self.resume = Resume(
+            personal_info=None,
+            education=None,
+            work_experience=None,
+            research_experience=None,
+            project_experience=None,
+            personal_statement=None
+        )
+        self.case_path = case_path
 
     def capture_personal_info(self):
         print("Please provide your personal information:")
-        self.personal_info.name = input("Name: ")
-        self.personal_info.email = input("Email: ")
-        self.personal_info.phone = input("Phone: ")
+        self.resume.personal_info = PersonalInfo(
+            name=input("Name: "),
+            email=input("Email: "),
+            phone=input("Phone: ")
+        )
 
     def capture_education(self):
         print("Please provide your education details (press enter to skip):")
@@ -63,7 +33,11 @@ class UserInterface:
             university = input("University: ")
             graduation_date = input("Graduation Date (MM/YYYY): ")
 
-            self.education.append(Education(degree=degree, university=university, graduation_date=graduation_date))
+            self.resume.education.append(Education(
+                degree=degree,
+                university=university,
+                graduation_date=graduation_date
+            ))
 
     def capture_work_experience(self):
         print("Please provide your work experience (press enter to skip):")
@@ -84,7 +58,7 @@ class UserInterface:
                     break
                 bullet_points.append(bullet_point)
 
-            self.work_experience.append(WorkExperience(
+            self.resume.work_experience.append(WorkExperience(
                 company=company,
                 position=position,
                 start_date=start_date,
@@ -112,7 +86,7 @@ class UserInterface:
                     break
                 bullet_points.append(bullet_point)
 
-            self.research_experience.append(ResearchExperience(
+            self.resume.research_experience.append(ResearchExperience(
                 organization=organization,
                 position=position,
                 start_date=start_date,
@@ -139,7 +113,7 @@ class UserInterface:
                     break
                 bullet_points.append(bullet_point)
 
-            self.project_experience.append(ProjectExperience(
+            self.resume.project_experience.append(ProjectExperience(
                 name=name,
                 start_date=start_date,
                 end_date=end_date,
@@ -149,7 +123,7 @@ class UserInterface:
 
     def capture_personal_statement(self):
         print("Please provide your personal statement (press enter to skip):")
-        self.personal_statement = input("Personal Statement: ")
+        self.resume.personal_statement = input("Personal Statement: ")
 
     def display_resume(self):
         doc = Document()
@@ -166,22 +140,22 @@ class UserInterface:
         # Add personal information
         doc.add_heading("Personal Information", level=1)
         p = doc.add_paragraph()
-        p.add_run(f"Name: {self.personal_info.name or ''}").bold = True
+        p.add_run(f"Name: {self.resume.personal_info.name or ''}").bold = True
         p.add_run(" | ")
-        p.add_run(f"Email: {self.personal_info.email or ''}").bold = True
+        p.add_run(f"Email: {self.resume.personal_info.email or ''}").bold = True
         p.add_run(" | ")
-        p.add_run(f"Phone: {self.personal_info.phone or ''}").bold = True
+        p.add_run(f"Phone: {self.resume.personal_info.phone or ''}").bold = True
 
         # Add education details
         doc.add_heading("Education", level=1)
-        for education in self.education:
+        for education in self.resume.education or []:
             doc.add_heading(f"{education.degree or ''}", level=2)
             doc.add_paragraph(f"University: {education.university or ''}")
             doc.add_paragraph(f"Graduation Date: {education.graduation_date or ''}")
 
         # Add work experience
         doc.add_heading("Work Experience", level=1)
-        for experience in self.work_experience:
+        for experience in self.resume.work_experience or []:
             doc.add_heading(f"{experience.position or ''} at {experience.company or ''}", level=2)
             doc.add_paragraph(f"{experience.start_date or ''} - {experience.end_date or ''}")
             doc.add_paragraph(f"Summary: {experience.summary or ''}")
@@ -190,7 +164,7 @@ class UserInterface:
 
         # Add research experience
         doc.add_heading("Research Experience", level=1)
-        for experience in self.research_experience:
+        for experience in self.resume.research_experience or []:
             doc.add_heading(f"{experience.position or ''} at {experience.organization or ''}", level=2)
             doc.add_paragraph(f"{experience.start_date or ''} - {experience.end_date or ''}")
             doc.add_paragraph(f"Summary: {experience.summary or ''}")
@@ -199,7 +173,7 @@ class UserInterface:
 
         # Add project experience
         doc.add_heading("Project Experience", level=1)
-        for experience in self.project_experience:
+        for experience in self.resume.project_experience or []:
             doc.add_heading(f"{experience.name or ''}", level=2)
             doc.add_paragraph(f"{experience.start_date or ''} - {experience.end_date or ''}")
             doc.add_paragraph(f"Summary: {experience.summary or ''}")
@@ -208,48 +182,8 @@ class UserInterface:
 
         # Add personal statement
         doc.add_heading("Personal Statement", level=1)
-        doc.add_paragraph(self.personal_statement or '')
+        doc.add_paragraph(self.resume.personal_statement or '')
 
         # Save the document
-        doc.save("resume.docx")
+        doc.save(os.path.join(self.case_path, "resume.docx"))
         print("Resume generated successfully!")
-
-def main():
-    parser = argparse.ArgumentParser(description="Python Resume Generator")
-    parser.add_argument("--input", help="Path to input file")
-
-    args = parser.parse_args()
-
-    ui = UserInterface()
-
-    if args.input:
-        # Read input from file
-        with open(args.input, "r") as file:
-            input_data = file.read()
-
-        # Process user input
-        # Here, you can implement logic to parse and validate the input data
-        # and populate the necessary variables in the UserInterface class
-        # For simplicity, I'm assuming the input data is in JSON format
-        data = json.loads(input_data)
-        ui.personal_info = PersonalInfo(**data.get("personal_info", {}))
-        ui.education = [Education(**edu) for edu in data.get("education", [])]
-        ui.work_experience = [WorkExperience(**exp) for exp in data.get("work_experience", [])]
-        ui.research_experience = [ResearchExperience(**exp) for exp in data.get("research_experience", [])]
-        ui.project_experience = [ProjectExperience(**exp) for exp in data.get("project_experience", [])]
-        ui.personal_statement = data.get("personal_statement", "")
-
-    else:
-        # Capture user input
-        ui.capture_personal_info()
-        ui.capture_education()
-        ui.capture_work_experience()
-        ui.capture_research_experience()
-        ui.capture_project_experience()
-        ui.capture_personal_statement()
-
-    # Display the resume
-    ui.display_resume()
-
-if __name__ == "__main__":
-    main()
