@@ -52,6 +52,6 @@ farewell:
 
 #Defines a target named run. This target will run GPT Engineer on the folder with the given name, name was defined earlier in the Makefile.
 run:
-	@echo -e "$(COLOR_CYAN)Running GPT Engineer on $(COLOR_GREEN)$(name)$(COLOR_CYAN) folder...$(COLOR_RESET)" && \
+	@echo -e "$(COLOR_CYAN)Running cv-builder on $(COLOR_GREEN)$(name)$(COLOR_CYAN) folder...$(COLOR_RESET)" && \
 	source venv/bin/activate && \
 	cv-builder projects/$(name)
